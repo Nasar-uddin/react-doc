@@ -1,26 +1,45 @@
 import React from 'react';
-import logo from './logo.svg';
+import {BrowserRouter,Route} from 'react-router-dom';
 import './App.css';
+import fire from './config/firebase';
+import Navbar from './components/Navbar';
+import Home from './components/Home';
+import Login from './components/Login';
+import Signup from './components/Signup';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+	state = {
+		user:null
+	}
+	componentDidMount(){
+		// console.log(this.state);
+		this.authListner();
+	}
+	authListner = ()=>{
+		fire.auth().onAuthStateChanged((user)=>{
+			console.log(user);
+			if(user){
+				this.setState({user:user});
+				localStorage.setItem('user',user.uid);
+
+			}else{
+				this.setState({'user':null});
+				localStorage.removeItem('user');
+			}
+		});
+	}
+	render(){
+		return (
+			<BrowserRouter>
+				<Navbar user={this.state.user}/>
+				<div className="App container">
+					<Route exact path="/" component={Home}/>
+					<Route path="/signup" component={Signup}/>
+					<Route path="/login" component={Login}/>
+				</div>
+			</BrowserRouter>
+		);
+	}
 }
 
 export default App;
