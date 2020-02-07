@@ -17,8 +17,9 @@ class App extends React.Component {
 	}
 	authListner = ()=>{
 		fire.auth().onAuthStateChanged((user)=>{
-			console.log(user);
+			// console.log(user);
 			if(user){
+				console.log('Your are loged in');
 				this.setState({user:user});
 				localStorage.setItem('user',user.uid);
 
